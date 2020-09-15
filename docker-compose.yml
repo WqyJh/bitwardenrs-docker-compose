@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  bwrs:
+    image: bitwardenrs/server:latest
+    restart: always
+    volumes:
+      - ./bwdata:/data
+    env_file:
+      - .env
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certs/cert.crt:/etc/certs/cert.crt:ro
+      - ./certs/priv.key:/etc/certs/priv.key:ro
+    links:
+      - bwrs
