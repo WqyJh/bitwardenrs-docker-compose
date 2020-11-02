@@ -1,70 +1,67 @@
 # bitwardenrs-docker-compose
 
-Use docker-compose to deploy bitwardenrs with nginx, having the following features:
+Use docker-compose to deploy bitwardenrs with caddy, having the following features:
 
 - [x] HTTPS
-- [ ] Let's encrypt certificate apply/renewal
+- [x] Let's encrypt certificate apply/renewal
 
 ## Usage
 
-```bash
-git clone https://github.com/WqyJh/bitwardenrs-docker-compose
-cd bitwardenrs-docker-compose/
+1. Clone the repo.
 
-cp .env.template .env
+    ```bash
+    git clone https://github.com/WqyJh/bitwardenrs-docker-compose bwrs/
+    cd bwrs/
+    ```
+
+2. Create config files.
+
+    ```bash
+    cp .env.template .env
+    ```
+
+3. Config domain.
+
+    ```bash
+    cat << EOF >> .env
+    DOMAIN=https://bitwarden.example.com
+    EOF
+
+    cat << EOF > .caddyenv
+    DOMAIN=bitwarden.example.com
+    EMAIL=bitwarden@example.com
+    EOF
 ```
 
-Config tls certs.
+4. Config smtp (optional).
 
-```bash
-mkdir -p certs/
-cp /path/to/cert.crt certs/
-cp /path/to/priv.key certs/
-```
+    ```bash
+    cat << EOF >> .env
+    SMTP_HOST=smtp.
+    SMTP_FROM=bitwarden@example.com
+    SMTP_FROM_NAME=Bitwarden_RS
+    SMTP_PORT=587
+    SMTP_SSL=true
+    SMTP_EXPLICIT_TLS=true
+    SMTP_USERNAME=bitwarden@example.com
+    SMTP_PASSWORD=password
+    EOF
+    ```
 
-Config domain.
+5. Start the server.
 
-```bash
-cat << EOF >> .env
-DOMAIN=https://bitwarden.example.com
-EOF
-```
+    ```bash
+    docker-compose up -d
+    ```
 
-Config smtp (optional).
+6. Browse https://bitwarden.example.com to register an account and activate it.
 
-```bash
-cat << EOF >> .env
-SMTP_HOST=smtp.
-SMTP_FROM=bitwarden@example.com
-SMTP_FROM_NAME=Bitwarden_RS
-SMTP_PORT=587
-SMTP_SSL=true
-SMTP_EXPLICIT_TLS=true
-SMTP_USERNAME=bitwarden@example.com
-SMTP_PASSWORD=password
-EOF
-```
+7. Then disable signups for security consideration.
 
-Config nginx.
-
-```bash
-sed -i 's/yourhost/bitwarden.example.com/' nginx/conf.d/bwrs.conf
-```
-
-Start the server.
-
-```bash
-docker-compose up -d
-```
-
-Browse https://bitwarden.example.com to register an account and activate it.
-
-Then disable signups for security consideration.
-
-```bash
-cat << EOF >> .env
-SIGNUPS_ALLOWED=false
-EOF
-docker-compose down
-docker-compose up -d
-```
+    ```bash
+    cat << EOF >> .env
+    SIGNUPS_ALLOWED=false
+    EOF
+    docker-compose down
+    docker-compose up -d
+    ```
