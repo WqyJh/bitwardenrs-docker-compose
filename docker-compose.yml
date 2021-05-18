@@ -2,21 +2,31 @@ version: "3"
 
 services:
   bwrs:
-    image: bitwardenrs/server
+    image: vaultwarden/server
+    container_name: vaultwarden
     restart: unless-stopped
+    environment:
+      - WEBSOCKET_ENABLED=true  # Enable WebSocket notifications.
     volumes:
       - ./bwdata:/data
     env_file:
       - .env
   caddy:
-    image: caddy
+    image: caddy:2
+    container_name: caddy
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
+# For custom ports
+#      - "10080:10080"
+#      - "10443:10443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy-config:/config
+      - ./caddy-data:/data
     env_file:
       - .caddyenv
     links:
       - bwrs
+

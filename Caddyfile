@@ -1,4 +1,10 @@
-{$DOMAIN} {
+# For custom ports
+#{
+#  http_port 10080
+#  https_port 10443
+#}
+
+servers {$DOMAIN} {
   tls {$EMAIL}
 
   encode gzip
@@ -28,3 +34,4 @@
        header_up X-Real-IP {remote_host}
   }
 }
+
