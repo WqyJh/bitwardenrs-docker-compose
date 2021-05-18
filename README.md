@@ -31,7 +31,7 @@ Use docker-compose to deploy bitwardenrs with caddy, having the following featur
     DOMAIN=bitwarden.example.com
     EMAIL=bitwarden@example.com
     EOF
-```
+    ```
 
 4. Config smtp (optional).
 
